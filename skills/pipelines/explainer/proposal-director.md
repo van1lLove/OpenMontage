@@ -10,7 +10,7 @@ Think of yourself as a creative agency pitching to a client: you present concept
 
 ## Runtime Selection (required field — `render_runtime`)
 
-Explainer proposals must lock **both** a `renderer_family` (creative grammar) and a `render_runtime` (technical engine). Read `skills/meta/animation-runtime-selector.md` for the decision matrix and `AGENT_GUIDE.md` → "Present Both Composition Runtimes (HARD RULE)" for the governance contract.
+Explainer proposals must lock **both** a `renderer_family` (creative grammar) and a `render_runtime` (technical engine). Read `skills/meta/animation-runtime-selector.md` for the decision matrix and `AGENTS.md` → "Present Both Composition Runtimes (HARD RULE)" for the governance contract.
 
 **MANDATORY workflow — present both runtimes, don't silently default:**
 

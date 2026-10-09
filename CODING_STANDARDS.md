@@ -1,64 +1,33 @@
 # OpenMontage - Coding Standards
 
-Conventions for changing OpenMontage's code: tools, pipelines, and tests. For running a video production, follow [`AGENT_GUIDE.md`](AGENT_GUIDE.md) instead.
+Conventions for changing OpenMontage's code, tests, and agent docs. Running a video production follows [`AGENTS.md`](AGENTS.md).
 
 ## Where Logic Lives
 
-Python = tools + persistence. Orchestration, creative decisions, review logic, and checkpoint policy live in instructions (pipeline manifests + director skills + meta skills), never in Python: no Python orchestrator, reviewer, or handlers.
+Python = tools + persistence. Orchestration, creative decisions, review logic, and checkpoint policy live in instructions (pipeline manifests, director skills, meta skills): Python has no orchestrator, reviewer, or stage handlers.
+
+Skills teach tool usage; tool source is for debugging, audits, and verifying the governance contract. When a skill and a tool disagree, the source wins: fix the skill so the next agent skips the dive.
 
 ## Adding a Tool
 
-1. Inherit from `BaseTool` in `tools/base_tool.py` (every production tool does).
-2. Put the tool in the correct capability package (`tools/audio/`, `tools/video/`, `tools/enhancement/`, `tools/analysis/`, `tools/graphics/`, `tools/avatar/`, `tools/subtitle/`).
-3. Prefer the selector-plus-provider pattern (see Selector Pattern below):
-   - one capability router tool for agent convenience
-   - one concrete tool per real provider/runtime path
-   - Example: `tts_selector` + `elevenlabs_tts` / `google_tts` / `openai_tts` / `piper_tts`
-4. Set all contract fields (name, version, tier, capability, provider, supports, fallback_tools, agent_skills, etc.). Support-envelope reporting is the source of truth for capability, status, and resource requirements.
-5. Implement `execute()` returning a `ToolResult`.
-6. Let discovery happen through `tools/tool_registry.py`; do not depend on ad hoc imports.
-7. Add a JSON schema in `schemas/tools/` if the tool has complex I/O.
-8. Add tests only after the runtime path is correct.
+1. Subclass `BaseTool` (`tools/base_tool.py`) in the matching capability package under `tools/`.
+2. Use the selector-plus-provider pattern: one concrete tool per real provider/runtime path behind a capability router (`tts_selector` → `elevenlabs_tts` / `google_tts` / `piper_tts`). Selectors discover providers via `registry.get_by_capability(...)` and route by user preference > availability > discovery order, so a new provider tool needs no selector change.
+3. Fill every contract field (`name`, `version`, `tier`, `capability`, `provider`, `supports`, `fallback_tools`, `agent_skills`, ...). Support-envelope reporting is the source of truth for capability, status, and resource requirements.
+4. Implement `execute(params_dict)` returning a `ToolResult` (`.success`, `.data`, `.error`); callers use `.execute()`, never `.run()`.
+5. Let `tools/tool_registry.py` discover the tool; import it nowhere by hand.
+6. Add a JSON schema in `schemas/tools/` when the I/O is complex.
+7. Add tests once the runtime path works.
 
-### Tool Class Naming Convention
-
-All tool classes use **PascalCase without a "Tool" suffix**:
-
-| Module | Class Name | NOT |
-|--------|-----------|-----|
-| `tools.audio.music_gen` | `MusicGen` | ~~MusicGenTool~~ |
-| `tools.video.video_compose` | `VideoCompose` | ~~VideoComposeTool~~ |
-| `tools.audio.audio_mixer` | `AudioMixer` | ~~AudioMixerTool~~ |
-| `tools.tts.elevenlabs_tts` | `ElevenLabsTTS` | ~~ElevenLabsTTSTool~~ |
-| `tools.analysis.transcriber` | `Transcriber` | ~~TranscriberTool~~ |
-| `tools.subtitle.subtitle_gen` | `SubtitleGen` | ~~SubtitleGenTool~~ |
-
-When in doubt, check: `grep "^class " tools/<path>.py`
-
-All tools are called via `.execute(params_dict)` (returns `ToolResult` with `.success`, `.data`, `.error`), NOT `.run()`.
-
-### Selector Pattern
-
-Three selector tools abstract multi-provider capabilities. **Selectors auto-discover providers from the registry**, so adding a new provider tool makes it available through the selector with no selector code changes.
-
-| Selector | Routes to | How it discovers |
-|----------|-----------|-----------------|
-| `tts_selector` | All tools with `capability="tts"` | `registry.get_by_capability("tts")` |
-| `image_selector` | All tools with `capability="image_generation"` | `registry.get_by_capability("image_generation")` |
-| `video_selector` | All tools with `capability="video_generation"` | `registry.get_by_capability("video_generation")` |
-
-Selectors route based on: user preference > availability > discovery order. They adapt input schemas between providers transparently.
+Class names are PascalCase without a `Tool` suffix: `MusicGen`, `VideoCompose`, `ElevenLabsTTS`. Check an existing one with `grep "^class " tools/<path>.py`.
 
 ## Adding a Pipeline
 
-1. Create a YAML manifest in `pipeline_defs/` (validated by `schemas/pipelines/pipeline_manifest.schema.json`).
-2. Create stage director skills in `skills/pipelines/<pipeline-name>/` (one per stage, idea through publish).
-3. Reference meta skills (reviewer, checkpoint-protocol) in the manifest.
-4. Add compatible playbooks to the manifest.
-5. Add contract tests in `tests/contracts/`.
+1. Write `pipeline_defs/<name>.yaml` (validated by `schemas/pipelines/pipeline_manifest.schema.json`), listing meta skills (reviewer, checkpoint-protocol) and compatible playbooks.
+2. Write one director skill per stage in `skills/pipelines/<name>/`.
+3. Add contract tests in `tests/contracts/`.
 
 ## Editing Agent Docs
 
-Contract tests read the agent docs. `tests/contracts/test_phase0_contracts.py` asserts `AGENT_GUIDE.md` keeps the headings `## Orchestrator`, `## Stage Agents`, `## Reviewer Protocol`, `## Communication Protocol`, `## Human Checkpoint Protocol`, and that every platform wrapper (`AGENTS.md`, `CLAUDE.md`, `CODEX.md`, `CURSOR.md`, `COPILOT.md`) mentions `AGENT_GUIDE.md`. Other tests grep `AGENT_GUIDE.md` for `Present Both Composition Runtimes`, `HARD RULE`, `silently`, `taste-direction.md`, and `provider_menu_summary`. Skills, schemas, and tool error strings cite headings by name: `AGENT_GUIDE.md` → "Present Both Composition Runtimes (HARD RULE)" and "Escalate Blockers Explicitly" (also in a `video_compose` error string), and `docs/agent/*.md` headings such as "Provider Menu (Mandatory at Preflight)" and "Composition Authoring Mode"; grep the repo before renaming or moving one.
+`AGENTS.md` is the single always-loaded entry (`CLAUDE.md` imports it; the other platform files point to it): routing, Rule Zero, and the hard rules every production run needs. Reference only some branches reach goes in `docs/agent/`, behind a pointer in `AGENTS.md` that names the triggering branch. Keep each rule in one file; replace anything a one-command lookup answers (`pipeline_defs/`, `styles/`, registry output, `skills/INDEX.md`) with that command.
 
-`AGENT_GUIDE.md` is the always-loaded entry: routing, Rule Zero, and the hard rules every production run needs. Reference only some branches reach goes in `docs/agent/`, behind a pointer in the guide's Reference table that names the branch that triggers it. Keep each rule in one file and point to it from the others.
+Tests read these docs. `tests/contracts/test_phase0_contracts.py` asserts `AGENTS.md` keeps `## Orchestrator`, `## Stage Agents`, `## Reviewer Protocol`, `## Communication Protocol`, `## Human Checkpoint Protocol`, and that every platform wrapper mentions `AGENTS.md`. Other tests grep `AGENTS.md` for `Present Both Composition Runtimes`, `HARD RULE`, `silently`, `taste-direction.md`, and `provider_menu_summary`. Skills, schemas, and tool error strings cite headings by name: `AGENTS.md` → "Present Both Composition Runtimes (HARD RULE)", "Escalate Blockers Explicitly" (also in a `video_compose` error string), "Decision Communication Contract", "Rule Zero"; `docs/agent/preflight.md` → "Mandatory Preflight", "Provider Menu (Mandatory at Preflight)", "Setup Offer Protocol"; `docs/agent/composition.md` → "Composition Authoring Mode". Grep the repo before renaming or moving one.

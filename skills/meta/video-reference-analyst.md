@@ -133,7 +133,7 @@ Composition engine       Remotion: available        READY
 
 **Composition engine selection:** Remotion and HyperFrames are parallel, non-ranked
 composition runtimes — do NOT pre-lock either one here. When both are available, the
-"Present Both Composition Runtimes (HARD RULE)" gate in `AGENT_GUIDE.md` governs the
+"Present Both Composition Runtimes (HARD RULE)" gate in `AGENTS.md` governs the
 choice: present both options to the user with tradeoffs at the proposal stage and wait
 for explicit approval before locking `render_runtime`. Silently picking a default is
 forbidden. FFmpeg is not a composition runtime in this flow — it is reserved for
@@ -307,9 +307,9 @@ the user paralyzed with equal choices.
 Skills exist precisely so the agent doesn't need to read implementation code.
 Layer 2 skills describe *what* and *when*. Layer 3 skills describe *how*.
 
-This is NOT optional. The AGENT_GUIDE says: *"Layer 3 is not optional.
-Every generation tool has an agent_skills field. Read them before writing
-prompts."*
+This is NOT optional. AGENTS.md → Rule Zero: *"Read Layer 3 skills before
+every generation call."* Every generation tool lists them in its
+`agent_skills` field.
 
 Example checklist before generating:
 ```

@@ -36,7 +36,7 @@ When both Remotion AND HyperFrames are available on the machine (check
 `video_compose.get_info()["render_engines"]`), the agent MUST present both
 options to the user before locking `render_runtime`. The decision matrix
 below is the agent's input for the conversation, NOT a license to silently
-pick the "default" entry. See `AGENT_GUIDE.md` → "Present Both Composition
+pick the "default" entry. See `AGENTS.md` → "Present Both Composition
 Runtimes" for the full contract.
 
 Concretely, at the proposal stage:
@@ -67,7 +67,7 @@ when both were available is a CRITICAL reviewer finding.
 | BGM / SFX / image / icon resolution (any pipeline, any runtime) | n/a | `.agents/skills/media-use/SKILL.md` — `resolve` verb against project cache + global cache + HeyGen catalog |
 | Short design-led motion graphic (lower-third, stat reveal, logo sting, headline) | **hyperframes** | `.agents/skills/motion-graphics/SKILL.md` |
 | Pure concat / trim of source clips, no composition needed | **ffmpeg** | `skills/core/ffmpeg.md` |
-| Selected runtime is unavailable | **escalate** — do not substitute silently | `AGENT_GUIDE.md` → Escalate Blockers |
+| Selected runtime is unavailable | **escalate** — do not substitute silently | `AGENTS.md` → Escalate Blockers |
 
 Read `skills/core/hyperframes.md` for the full Remotion-vs-HyperFrames
 decision matrix and the list of features that stay Remotion-only in Phase 1.

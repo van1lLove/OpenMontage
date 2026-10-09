@@ -1515,7 +1515,7 @@ class VideoCompose(BaseTool):
                     "render_runtime='hyperframes' was locked at proposal, but "
                     "the HyperFrames runtime is not available on this machine. "
                     "Per governance this is a BLOCKER — surface it to the user "
-                    "per AGENT_GUIDE.md > 'Escalate Blockers Explicitly' and wait "
+                    "per AGENTS.md > 'Escalate Blockers Explicitly' and wait "
                     "for approval before switching runtime. Requirements: "
                     "Node.js >= 22, FFmpeg, and npx on PATH. See "
                     "tools/video/hyperframes_compose.py for the specific missing piece."

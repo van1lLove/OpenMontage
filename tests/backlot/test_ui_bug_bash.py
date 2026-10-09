@@ -97,7 +97,7 @@ def test_static_navigation_invalid_route_and_active_takes(staged_backlot_server)
             assert href and "static=1" in href
 
             response = page.goto(
-                staged_backlot_server + "/p/..%2FAGENT_GUIDE.md?static=1",
+                staged_backlot_server + "/p/..%2FAGENTS.md?static=1",
                 wait_until="networkidle",
             )
             assert response and response.status == 200

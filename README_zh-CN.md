@@ -13,7 +13,7 @@
   <a href="#流水线">流水线</a> &nbsp;·&nbsp;
   <a href="#工作原理">工作原理</a> &nbsp;·&nbsp;
   <a href="docs/PROVIDERS.md">提供商</a> &nbsp;·&nbsp;
-  <a href="AGENT_GUIDE.md">智能体指南</a>
+  <a href="AGENTS.md">智能体指南</a>
 </p>
 
 <p align="center">
@@ -147,7 +147,7 @@ make setup
 本仓库专为智能体（Agent）操作而构建。如果您是 OpenClaw 风格的智能体，以下是快速发挥作用的最短路径：
 
 1. **首先阅读契约**
-   从 [`AGENT_GUIDE.md`](AGENT_GUIDE.md) 开始，然后是 [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md)。
+   从 [`AGENTS.md`](AGENTS.md) 开始，然后是 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)。
 2. **不要擅自虚构制作工作流**
    OpenMontage 是流水线驱动的。实际工作通过 `pipeline_defs/` 进行，阶段导演技能在 `skills/pipelines/` 中，工具发现通过 registry（注册表）完成。
 3. **检查实际的能力范围**
@@ -598,13 +598,11 @@ OpenMontage 兼容所有能够读取文件并执行 Python 的 AI 编程助手�
 
 | 平台 | 配置文件 |
 |----------|------------|
-| **Claude Code** | `CLAUDE.md` |
-| **Cursor** | `CURSOR.md` + `.cursor/rules/` |
-| **GitHub Copilot** | `COPILOT.md` + `.github/copilot-instructions.md` |
-| **Codex** | `CODEX.md` |
-| **Windsurf** | `.windsurfrules` |
+| **Codex、Cursor、Copilot、Windsurf 及其他读取 `AGENTS.md` 的工具** | `AGENTS.md` |
+| **Claude Code** | `CLAUDE.md`（导入 `AGENTS.md`） |
+| **Cursor / Copilot / Windsurf（旧版规则文件）** | `.cursor/rules/`、`.github/copilot-instructions.md`、`.windsurfrules` |
 
-所有平台的指令文件都指向共享的 `AGENT_GUIDE.md`（操作指南和智能体契约），该文件再链接到 `PROJECT_CONTEXT.md`（架构参考）、`CODING_STANDARDS.md`（代码规范）以及 `docs/agent/` 中的分支参考文档。
+`AGENTS.md` 是共享的操作指南和智能体契约，它链接到 `CODING_STANDARDS.md`（代码规范）以及 `docs/agent/` 中的分支参考文档。
 
 > **即将推出：** 借助 **Ollama** 和 **LM Studio** 提供本地 LLM 支持 — 无需任何云端大模型即可运行整个生产流水线。
 
@@ -627,7 +625,7 @@ OpenMontage 被设计为高度可扩展的。最常见的两种贡献是：
 2. 在 `skills/pipelines/<你的流水线名称>/` 中创建阶段导演技能文件
 3. 引用现有的工具 — 或在需要时添加新工具
 
-详见 `docs/ARCHITECTURE.md` 获取完整的技术参考，`docs/PROVIDERS.md` 查看完整的提供商指南（设置、定价、免费额度），以及 `AGENT_GUIDE.md` 了解智能体契约。
+详见 `docs/ARCHITECTURE.md` 获取完整的技术参考，`docs/PROVIDERS.md` 查看完整的提供商指南（设置、定价、免费额度），以及 `AGENTS.md` 了解智能体契约。
 
 ### 加入社区
 

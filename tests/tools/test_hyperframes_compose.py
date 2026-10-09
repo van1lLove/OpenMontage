@@ -280,7 +280,7 @@ def test_video_compose_render_engines_follow_hyperframes_runtime_check(monkeypat
 
 
 def test_provider_menu_summary_returns_expected_shape():
-    """Regression: AGENT_GUIDE.md line 246 points agents at provider_menu_summary
+    """Regression: AGENTS.md points agents at provider_menu_summary
     for the capability menu. The shape must be stable and cover the four fields
     the guide references."""
     from tools.tool_registry import registry
@@ -319,15 +319,15 @@ def test_provider_menu_summary_returns_expected_shape():
 
 
 def test_agent_guide_references_provider_menu_summary():
-    """Regression: AGENT_GUIDE.md must route agents to provider_menu_summary
+    """Regression: AGENTS.md must route agents to provider_menu_summary
     instead of dumping support_envelope raw. If this gets reverted a fresh-
     session agent will paste the firehose into chat."""
     from pathlib import Path
 
     root = Path(__file__).resolve().parent.parent.parent
-    guide = (root / "AGENT_GUIDE.md").read_text(encoding="utf-8")
+    guide = (root / "AGENTS.md").read_text(encoding="utf-8")
     assert "provider_menu_summary" in guide, (
-        "AGENT_GUIDE.md must reference provider_menu_summary() as the primary "
+        "AGENTS.md must reference provider_menu_summary() as the primary "
         "preflight helper — without this, agents fall back to the firehose."
     )
 

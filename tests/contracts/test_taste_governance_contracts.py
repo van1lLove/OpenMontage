@@ -91,7 +91,7 @@ def test_taste_direction_is_discoverable_to_new_agents():
     assert "Taste Direction" in index
     assert "meta/taste-direction.md" in index
 
-    guide = (ROOT / "AGENT_GUIDE.md").read_text(encoding="utf-8")
+    guide = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     assert "taste-direction.md" in guide
 
 

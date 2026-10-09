@@ -564,7 +564,7 @@ class TestPipelineInstructionArchitecture:
 
 class TestAgentContextFiles:
     def test_agent_guide_contains_canonical_sections(self):
-        contents = (PROJECT_ROOT / "AGENT_GUIDE.md").read_text(encoding="utf-8")
+        contents = (PROJECT_ROOT / "AGENTS.md").read_text(encoding="utf-8")
         for header in (
             "## Orchestrator",
             "## Stage Agents",
@@ -575,9 +575,14 @@ class TestAgentContextFiles:
             assert header in contents
 
     def test_platform_wrappers_reference_agent_guide(self):
-        for path in ("CLAUDE.md", "CODEX.md", "CURSOR.md", "COPILOT.md", "AGENTS.md"):
+        for path in (
+            "CLAUDE.md",
+            ".cursor/rules/openmontage.mdc",
+            ".github/copilot-instructions.md",
+            ".windsurfrules",
+        ):
             contents = (PROJECT_ROOT / path).read_text(encoding="utf-8")
-            assert "AGENT_GUIDE.md" in contents
+            assert "AGENTS.md" in contents
 
 
 # ---- Media Profiles ----

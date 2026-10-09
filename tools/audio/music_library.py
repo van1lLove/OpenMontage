@@ -3,7 +3,7 @@
 Surfaces the tracks a user has dropped into ``music_library/`` so the agent can
 present them at the *proposal* stage, before creative direction is approved.
 
-AGENT_GUIDE.md requires the music decision to be made at the proposal stage, but
+AGENTS.md requires the music decision to be made at the proposal stage, but
 the only check for ``music_library/`` historically lived in the asset-director
 skills, which run later. That meant a user could approve a creative direction
 without ever being told a free, intentional music option was sitting on disk.

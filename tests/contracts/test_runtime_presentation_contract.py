@@ -11,7 +11,7 @@ finds no runtime guidance will silently default to Remotion — which is the
 exact failure mode this contract prevents.
 
 See:
-- AGENT_GUIDE.md → "Present Both Composition Runtimes (HARD RULE)"
+- AGENTS.md → "Present Both Composition Runtimes (HARD RULE)"
 - skills/core/hyperframes.md → "Hard rule: present both runtimes"
 - skills/meta/reviewer.md → finding #6
 """
@@ -166,7 +166,7 @@ def test_compose_stage_references_runtime_routing(manifest_path: Path):
 def test_agent_guide_carries_hard_rule():
     """The top-level agent contract must carry the HARD RULE banner so every
     fresh-session agent reads it before picking a pipeline."""
-    guide = (ROOT / "AGENT_GUIDE.md").read_text(encoding="utf-8")
+    guide = (ROOT / "AGENTS.md").read_text(encoding="utf-8")
     assert "Present Both Composition Runtimes" in guide
     assert "HARD RULE" in guide
     # The rule must explicitly forbid the failure mode.

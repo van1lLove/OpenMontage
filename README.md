@@ -15,7 +15,7 @@
   <a href="#sponsors">Sponsors</a> &nbsp;·&nbsp;
   <a href="docs/PROVIDERS.md">Providers</a> &nbsp;·&nbsp;
   <a href="docs/PR_REVIEW_GUIDE.md">Review Guide</a> &nbsp;·&nbsp;
-  <a href="AGENT_GUIDE.md">Agent Guide</a>
+  <a href="AGENTS.md">Agent Guide</a>
 </p>
 
 <p align="center">
@@ -204,7 +204,7 @@ That's it. The agent researches your topic with live web search, generates AI im
 This repo is built for agentic operation. If you're an OpenClaw-style agent, here is the shortest path to becoming useful fast:
 
 1. **Read the contract first**
-   Start with [`AGENT_GUIDE.md`](AGENT_GUIDE.md), then [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md).
+   Start with [`AGENTS.md`](AGENTS.md), then [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 2. **Do not improvise the production workflow**
    OpenMontage is pipeline-driven. Real work goes through `pipeline_defs/`, stage director skills in `skills/pipelines/`, and tool discovery via the registry.
 3. **Check the actual capability envelope**
@@ -665,13 +665,11 @@ OpenMontage works with any AI coding assistant that can read files and execute P
 
 | Platform | Config File |
 |----------|------------|
-| **Claude Code** | `CLAUDE.md` |
-| **Cursor** | `CURSOR.md` + `.cursor/rules/` |
-| **GitHub Copilot** | `COPILOT.md` + `.github/copilot-instructions.md` |
-| **Codex** | `CODEX.md` |
-| **Windsurf** | `.windsurfrules` |
+| **Codex, Cursor, Copilot, Windsurf, and other `AGENTS.md` readers** | `AGENTS.md` |
+| **Claude Code** | `CLAUDE.md` (imports `AGENTS.md`) |
+| **Cursor / Copilot / Windsurf (legacy rule files)** | `.cursor/rules/`, `.github/copilot-instructions.md`, `.windsurfrules` |
 
-All platform files point to the shared `AGENT_GUIDE.md` (operating guide and agent contract), which links `PROJECT_CONTEXT.md` (architecture reference), `CODING_STANDARDS.md` (code conventions), and per-branch reference in `docs/agent/`.
+`AGENTS.md` is the shared operating guide and agent contract; it links `CODING_STANDARDS.md` (code conventions) and per-branch reference in `docs/agent/`.
 
 > **Coming soon:** Local LLM support via **Ollama** and **LM Studio** — run the full production pipeline without any cloud LLM.
 
@@ -694,7 +692,7 @@ OpenMontage is built to be extended. The two most common contributions:
 2. Create stage director skills in `skills/pipelines/<your-pipeline>/`
 3. Reference existing tools — or add new ones if needed
 
-See `docs/ARCHITECTURE.md` for the full technical reference, `docs/PROVIDERS.md` for the complete provider guide (setup, pricing, free tiers), and `AGENT_GUIDE.md` for the agent contract.
+See `docs/ARCHITECTURE.md` for the full technical reference, `docs/PROVIDERS.md` for the complete provider guide (setup, pricing, free tiers), and `AGENTS.md` for the agent contract.
 
 ### Join the Community
 

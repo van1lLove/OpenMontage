@@ -11,7 +11,7 @@ metadata:
 
 Comprehensive performance optimization guide for React and Next.js applications, maintained by Vercel. Contains 65 rules across 8 categories, prioritized by impact to guide automated refactoring and code generation.
 
-> **Extended reference:** [`AGENTS.md`](AGENTS.md) in this directory is the long-form upstream guide (vendored from Vercel). It is supplementary reference material scoped to this skill only — `SKILL.md` is the loadable entry point and the authority. It does not override or extend the repository-root `AGENTS.md` / `AGENT_GUIDE.md`.
+> **Extended reference:** [`AGENTS.md`](AGENTS.md) in this directory is the long-form upstream guide (vendored from Vercel). It is supplementary reference material scoped to this skill only — `SKILL.md` is the loadable entry point and the authority. It does not override or extend the repository-root `AGENTS.md`.
 
 ## When to Apply
 

@@ -10,7 +10,7 @@ Animation proposals have a unique dimension: **animation mode selection**. Unlik
 
 ## Runtime Selection (required field — `render_runtime`)
 
-Animation proposals must lock **both** a `renderer_family` (creative grammar) and a `render_runtime` (technical engine). These are separate concepts now that HyperFrames is a first-class runtime. Read `skills/meta/animation-runtime-selector.md` and `skills/core/hyperframes.md` for the decision matrix, and `AGENT_GUIDE.md` → "Present Both Composition Runtimes (HARD RULE)" for the governance contract.
+Animation proposals must lock **both** a `renderer_family` (creative grammar) and a `render_runtime` (technical engine). These are separate concepts now that HyperFrames is a first-class runtime. Read `skills/meta/animation-runtime-selector.md` and `skills/core/hyperframes.md` for the decision matrix, and `AGENTS.md` → "Present Both Composition Runtimes (HARD RULE)" for the governance contract.
 
 **MANDATORY workflow — present both runtimes, don't silently default:**
 
@@ -145,7 +145,7 @@ Image generation:  {configured}/{total}
 Video generation:  {configured}/{total}
   ...
 Composition runtimes:  {ffmpeg} / {remotion} / {hyperframes}
-  See AGENT_GUIDE.md > "Present Both Composition Runtimes (HARD RULE)".
+  See AGENTS.md > "Present Both Composition Runtimes (HARD RULE)".
 Audio: {configured}/{total}
 Math/Diagram: {configured}/{total}
 ```
