@@ -1,16 +1,15 @@
 # OpenMontage - Agent Guide
 
-Start here. This is the complete operating guide and agent contract for OpenMontage.
+Operating guide and agent contract for running video productions.
 
-For architecture, key files, and conventions see [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md).
+- Architecture and key files: [`PROJECT_CONTEXT.md`](PROJECT_CONTEXT.md).
+- Writing or changing code (tools, pipelines, tests, these docs): read [`CODING_STANDARDS.md`](CODING_STANDARDS.md) first.
 
 ## First Interaction — Onboarding
 
 When the user's first message is vague, exploratory, or asks what you can do ("make me a video", "what can you do?", "help me create something", "I want to make content"), read the onboarding skill **before** doing anything else:
 
 **Read:** `skills/meta/onboarding.md`
-
-This skill teaches you to run discovery, classify the user's setup, present capabilities in plain language, and offer starter prompts tailored to their available tools. The goal: get the user from "curious" to "making a video" in under 60 seconds.
 
 **Skip onboarding** when the user arrives with a specific, actionable request (e.g., "Make a 60-second explainer about black holes"). Go directly to Rule Zero.
 
@@ -23,8 +22,6 @@ When the user provides a **video URL or local video file as inspiration** — fo
 - "Use this Reel as a reference."
 
 — do **not** treat this as a generic web-search or prompt-writing request.
-
-This is a first-class workflow in OpenMontage.
 
 ### Required behavior
 
@@ -44,8 +41,6 @@ This is a first-class workflow in OpenMontage.
 - **Reference-driven request:** "make me something like this" -> use `video-reference-analyst.md`
 - **Source-footage request:** "edit this footage" / "cut this into clips" -> use `source_media_review` and the appropriate footage-led pipeline
 
-If a model misses this distinction, it will often fall back to plain search + guesswork. That is incorrect for OpenMontage.
-
 ## Rule Zero — All Production Goes Through a Pipeline
 
 **Every video production request MUST go through the pipeline system. No exceptions.**
@@ -64,28 +59,6 @@ When the user asks to make, create, produce, or generate any video content — a
 - Generate assets without reading the stage director skill first
 - Use a tool without checking its Layer 3 skill for prompting guidance
 - Bypass preflight, checkpoints, or review
-
-The intelligence is in the skills, not in improvised code. An agent that reads the director skills and Layer 3 knowledge will produce significantly better output than one that calls tools directly with generic prompts.
-
-## What OpenMontage Is
-
-OpenMontage is an instruction-driven video production system. The AI agent IS the intelligence — it reads instructions (pipeline manifests + stage director skills + meta skills) and drives the pipeline using tools.
-
-```
-Agent reads pipeline manifest (YAML) -> reads stage director skill (MD)
--> uses tools (Python BaseTool subclasses) -> self-reviews (meta skill)
--> checkpoints (Python utility) -> presents to human for approval
-```
-
-**Python = tools + persistence.** No orchestration logic, creative decisions, review logic, or checkpoint policy in Python code. The agent makes those decisions guided by instructions.
-
-Core loop:
-
-1. Select a pipeline.
-2. Run preflight.
-3. Discover real tools from the registry.
-4. Present the user with concepts, tool plan, production plan, and cost.
-5. Execute stage by stage with checkpoints.
 
 ## Decision Communication Contract
 
@@ -194,12 +167,6 @@ The agent:
 6. Checkpoints via the checkpoint protocol (`skills/meta/checkpoint-protocol.md`)
 7. Presents to human for approval when `human_approval_default: true`
 
-Infrastructure files:
-
-- `lib/checkpoint.py` — read/write checkpoints, stage validation
-- `tools/cost_tracker.py` — budget governance
-- `lib/pipeline_loader.py` — manifest loading and helpers
-
 ## Project Directory Convention
 
 Every production run creates a project workspace under `projects/`. This directory is gitignored — all generated assets are regenerable.
@@ -227,19 +194,6 @@ At pipeline initialization, before any stage runs:
 All tools and agents must write outputs to these paths — **always pass an explicit `output_path` under `projects/<project-id>/`**. Assets written to the repo root, cwd, or temp dirs are invisible to the user's board and violate the workspace contract.
 
 **This applies to atelier and HyperFrames-skill runs too**: hand-authored compositions still write the canonical artifacts they have (script or beats-plan, scene_plan-equivalent, asset manifest) plus checkpoints into `projects/<project-id>/`. The board is runtime-agnostic; only runs that skip the artifacts get a degraded board.
-
-## Music Library
-
-Users can place royalty-free music tracks in `music_library/` (gitignored). The asset director will check this folder before falling back to API-based music generation.
-
-```
-music_library/
-├── ambient_track.mp3
-├── cinematic_epic.mp3
-└── ...
-```
-
-If the folder has tracks, the proposal and asset stages should present them as options alongside generated music. See the proposal-director and asset-director skills for details.
 
 ## Available Pipelines
 
@@ -362,8 +316,6 @@ When tools are `UNAVAILABLE` but can be fixed with simple configuration, **offer
 **Rules:**
 - Always tell the user what they're missing AND what they'd gain
 - Show the cost difference (free local vs. paid API)
-- If the user declines setup, proceed with the best available path — no nagging
-- Group related fixes (tools sharing the same env var dependency)
 
 ### Composition Runtimes (Inside video_compose)
 
@@ -433,14 +385,7 @@ OpenMontage uses two layers for capability choice:
 - selector tools: capability-level routing such as `tts_selector` and `video_selector`
 - provider tools: concrete tools discovered via the registry that call a specific backend
 
-Always inspect the registry first:
-
-```bash
-python -c "from tools.tool_registry import registry; import json; registry.discover(); print(json.dumps(registry.capability_catalog(), indent=2))"
-python -c "from tools.tool_registry import registry; import json; registry.discover(); print(json.dumps(registry.provider_catalog(), indent=2))"
-```
-
-For finalist tools inspect:
+Always inspect the registry first (commands under Tool Families below). For finalist tools inspect:
 
 - `capability`
 - `provider`
@@ -449,11 +394,9 @@ For finalist tools inspect:
 - `fallback_tools`
 - `related_skills`
 
-Do not rely on memory or old docs when the registry can answer it.
-
 ## Tool Families
 
-**Do not maintain hardcoded tool lists.** Always query the registry at runtime:
+Query the registry at runtime rather than relying on memory or old docs:
 
 ```bash
 # See all tools grouped by capability (TTS, video_generation, image_generation, etc.)
@@ -478,34 +421,9 @@ Key capability families to look for in the output:
 
 Each tool in the registry declares `best_for`, `install_instructions`, `runtime` (LOCAL, API, LOCAL_GPU, HYBRID), and `status`. Read these fields — do not assume tool strengths from memory.
 
-### Tool Class Naming Convention
+In a stage, use the selector for multi-provider capabilities; the pipeline manifest's `tools_available` is the authoritative per-stage tool list.
 
-All tool classes use **PascalCase without a "Tool" suffix**. When importing tools in Python:
-
-| Module | Class Name | NOT |
-|--------|-----------|-----|
-| `tools.audio.music_gen` | `MusicGen` | ~~MusicGenTool~~ |
-| `tools.video.video_compose` | `VideoCompose` | ~~VideoComposeTool~~ |
-| `tools.audio.audio_mixer` | `AudioMixer` | ~~AudioMixerTool~~ |
-| `tools.tts.elevenlabs_tts` | `ElevenLabsTTS` | ~~ElevenLabsTTSTool~~ |
-| `tools.analysis.transcriber` | `Transcriber` | ~~TranscriberTool~~ |
-| `tools.subtitle.subtitle_gen` | `SubtitleGen` | ~~SubtitleGenTool~~ |
-
-When in doubt, check: `grep "^class " tools/<path>.py`
-
-All tools call via `.execute(params_dict)` (returns `ToolResult` with `.success`, `.data`, `.error`), NOT `.run()`.
-
-### Selector Pattern
-
-Three selector tools abstract multi-provider capabilities. **Selectors auto-discover providers from the registry.** Adding a new provider tool automatically makes it available through the selector — no selector code changes needed.
-
-| Selector | Routes to | How it discovers |
-|----------|-----------|-----------------|
-| `tts_selector` | All tools with `capability="tts"` (ElevenLabs, Google TTS, OpenAI, Piper) | `registry.get_by_capability("tts")` |
-| `image_selector` | All tools with `capability="image_generation"` (FLUX, Google Imagen, GPT Image, Recraft, etc.) | `registry.get_by_capability("image_generation")` |
-| `video_selector` | All tools with `capability="video_generation"` | `registry.get_by_capability("video_generation")` |
-
-Selectors route based on: user preference > availability > discovery order. They adapt input schemas between providers transparently.
+Importing or calling a tool class from Python (class names, `.execute()` vs `.run()`, how selectors route)? See `CODING_STANDARDS.md`.
 
 ## User-Facing Planning Protocol
 
@@ -528,7 +446,7 @@ Music is a critical part of any video. **Surface the music situation to the user
 
 Check music availability in this order and present the options:
 
-1. **User music library (`music_library/`):** Check if this folder exists and contains tracks. If so, list available tracks with durations and let the user pick one.
+1. **User music library (`music_library/`, gitignored, where users drop royalty-free tracks):** Check if this folder exists and contains tracks. If so, list available tracks with durations and let the user pick one.
 2. **Music generation APIs:** Check which music tools are available via the registry (`registry.get_by_capability("music_generation")`). Report their status honestly — include quota status if known.
 3. **Royalty-free sources:** Note if the user can provide their own track (e.g., from YouTube Audio Library, Jamendo, or other free sources). Offer the `music_library/` drop path.
 
@@ -541,10 +459,6 @@ Check music availability in this order and present the options:
 **If no music source is available:** Tell the user explicitly. Do NOT let this surface as a surprise at the asset stage.
 
 Record the music decision in the proposal/brief artifact so the asset director knows what to do.
-
-## Pipeline Asset Expectations
-
-Each pipeline manifest's `tools_available` field declares what tools a stage can use. Use selectors for multi-provider capabilities — the selector handles routing to whatever is available. Read the pipeline manifest for the authoritative list per stage.
 
 ## Stage Agents
 
@@ -589,19 +503,7 @@ The checkpoint protocol meta skill (`skills/meta/checkpoint-protocol.md`) teache
 
 ## Communication Protocol
 
-Agents coordinate through canonical JSON artifacts, checkpoints, pipeline manifests, and the tool registry.
-
-Primary files:
-
-- Artifact schemas: `schemas/artifacts/`
-- Checkpoint schema: `schemas/checkpoints/checkpoint.schema.json`
-- Pipeline manifest schema: `schemas/pipelines/pipeline_manifest.schema.json`
-- Pipeline manifests: `pipeline_defs/`
-- Style playbooks: `styles/*.yaml` (validated by `schemas/styles/playbook.schema.json`)
-- Tool contract: `tools/base_tool.py`
-- Tool registry: `tools/tool_registry.py`
-- Stage director skills: `skills/pipelines/<pipeline>/<stage>-director.md`
-- Meta skills: `skills/meta/*.md`
+Agents coordinate through canonical JSON artifacts, checkpoints, pipeline manifests, and the tool registry. File locations: `PROJECT_CONTEXT.md` → "Source of Truth"; checkpoint schema: `schemas/checkpoints/checkpoint.schema.json`.
 
 Checkpoint rules:
 
@@ -617,13 +519,6 @@ Pipeline manifest rules:
 
 - Pipelines are declarative YAML manifests in `pipeline_defs/`.
 - Stages declare: `skill` (director skill path), `produces`, `tools_available`, `review_focus`, `success_criteria`, `human_approval_default`.
-- Adding a new pipeline requires a manifest + stage director skills.
-
-Tool rules:
-
-- Every production tool must inherit from `BaseTool`.
-- Tool discovery flows through the registry, not ad hoc imports.
-- Support-envelope reporting is the source of truth for capability, status, and resource requirements.
 
 ## Style Playbooks
 
@@ -662,7 +557,7 @@ Reading order:
 
 **Exception: debugging, audits, and verifying the governance contract.** When a skill and a tool disagree, or when something behaves differently than the skill claims, reading the tool source is fair game — that's often the only way to catch a silent-availability bug or a stale doc string. An audit that refuses to look at the implementation will miss exactly the bugs that matter most. If you do read source to debug, consider whether the finding belongs in a skill update afterward so the next agent doesn't need to repeat the dive.
 
-**Layer 3 is not optional.** Every generation tool (video, image, TTS, music) has an `agent_skills` field listing its Layer 3 skills. These skills contain provider-specific prompt engineering, parameter tuning, and quality techniques. Read them before writing prompts. The difference between a generic prompt and a skill-informed prompt is the difference between "usable" and "cinematic."
+**Layer 3 is not optional.** Every generation tool (video, image, TTS, music) has an `agent_skills` field listing its Layer 3 skills; read them before writing prompts.
 
 Example: Before calling `kling_video`, read its `agent_skills` → `ai-video-gen` → get Kling-specific prompt structure, camera direction syntax, and quality keywords that the model responds to best.
 
@@ -692,7 +587,7 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 
 | Question | Where to look |
 |----------|---------------|
-| What tools exist? | `tools/tool_registry.py` and `registry.support_envelope()` |
+| What tools exist? | `registry.provider_menu_summary()` (see Mandatory Preflight) |
 | What providers are available for a capability? | `registry.capability_catalog()` |
 | What tools exist for a vendor? | `registry.provider_catalog()` |
 | How does a tool actually work? | the tool's `usage_location` from the registry |
@@ -701,13 +596,6 @@ The `.agents/skills/` directory is large. When you're not coming in through a to
 
 ## What Not To Do
 
-- **Do not bypass the pipeline.** Never write ad-hoc scripts to call tools directly. All production goes through pipeline stages with director skills. See Rule Zero.
-- **Do not call generation tools without reading their Layer 3 skill.** Check the tool's `agent_skills` field, read the referenced skill, then craft your prompts using that guidance.
-- **Do not skip stage director skills.** Before executing any pipeline stage, read its director skill. The skill contains the quality bar, the workflow, and the review criteria.
 - Do not use deleted legacy names such as `tts_cloud`, `tts_engine`, or `video_gen`.
-- Do not hardcode provider names, API key names, or setup URLs. Read them from the registry's `install_instructions` and `dependencies` fields.
 - Do not begin asset generation before user approval on the production plan.
 - Do not hide degraded paths. Record substitutions and blocked options explicitly.
-- Do not present a single unavailable tool in isolation. Always show the full capability picture: "X of Y providers configured for this capability."
-- Do not skip the Provider Menu at preflight. The user must see what they have AND what they could unlock.
-- Do not change provider, model, or render path without telling the user first and getting approval when the change is material.

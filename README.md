@@ -671,7 +671,7 @@ OpenMontage works with any AI coding assistant that can read files and execute P
 | **Codex** | `CODEX.md` |
 | **Windsurf** | `.windsurfrules` |
 
-All platform files point to the shared `AGENT_GUIDE.md` (operating guide and agent contract) and `PROJECT_CONTEXT.md` (architecture reference).
+All platform files point to the shared `AGENT_GUIDE.md` (operating guide and agent contract), which links `PROJECT_CONTEXT.md` (architecture reference) and `CODING_STANDARDS.md` (code conventions).
 
 > **Coming soon:** Local LLM support via **Ollama** and **LM Studio** — run the full production pipeline without any cloud LLM.
 

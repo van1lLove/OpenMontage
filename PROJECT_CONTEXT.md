@@ -1,10 +1,6 @@
-# OpenMontage - Shared Project Context
+# OpenMontage - Project Context
 
-This is the single source of truth for project architecture and conventions. All platform-specific agent files (CLAUDE.md, CODEX.md, CURSOR.md, COPILOT.md) should point here instead of duplicating this content.
-
-## Identity
-
-OpenMontage is an open-source, AI-orchestrated video production platform.
+Architecture and key files. Code conventions (adding tools or pipelines, naming, selectors, tests) live in [`CODING_STANDARDS.md`](CODING_STANDARDS.md).
 
 ## Architecture: Instruction-Driven (Agent-First)
 
@@ -16,11 +12,10 @@ Agent reads pipeline manifest (YAML) → reads stage director skill (MD)
 → checkpoints (Python utility) → presents to human for approval
 ```
 
-**No Python orchestrator, no Python reviewer, no Python handlers.** The agent drives the pipeline.
-
 ## Source of Truth
 
-- **Agent guide & contract:** `AGENT_GUIDE.md` (tool inventory, pipeline selection, stage agents, protocols)
+- **Agent guide & contract:** `AGENT_GUIDE.md` (pipeline selection, stage agents, protocols, available pipelines)
+- **Code conventions:** `CODING_STANDARDS.md`
 - **Skill index:** `skills/INDEX.md`
 - **Tool registry:** `tools/tool_registry.py`
 - **Pipeline manifests:** `pipeline_defs/`
@@ -32,29 +27,18 @@ Agent reads pipeline manifest (YAML) → reads stage director skill (MD)
 
 ## Knowledge Architecture (3 Layers)
 
-```
-Layer 1: tools/tool_registry.py     → "What tools exist" (runtime capabilities, status, cost)
-Layer 2: skills/                    → "How OpenMontage uses them" (project conventions)
-Layer 3: .agents/skills/            → "How the technology works" (generic API rules, skills.sh)
-```
-
-Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3. See `skills/INDEX.md` for the full mapping.
+See `AGENT_GUIDE.md` → "Layer Map". Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3; `skills/INDEX.md` has the full mapping.
 
 ## Key Patterns
 
 - **Pipeline state machine:** `idea -> script -> scene_plan -> assets -> edit -> compose -> publish`
 - **Instruction-driven stages:** Each stage has a director skill (MD) that teaches the agent HOW
 - **Pipeline manifests:** Declarative YAML defining stages, skills, tools, review focus, approval gates
-- **Capability-first tool design:** Each major family should expose a selector tool plus explicit provider tools
-  - Example: `tts_selector` + `elevenlabs_tts` / `google_tts` / `openai_tts` / `piper_tts`
-  - Example: `video_selector` + `heygen_video` / `wan_video` / `hunyuan_video` / `ltx_video_local` / `ltx_video_modal` / `cogvideo_video`
+- **Capability-first tool design:** selector tool plus explicit provider tools per family (see `CODING_STANDARDS.md`)
 - **Style playbooks:** YAML defining visual language, typography, motion, audio, asset generation constraints
 - **Artifacts are canonical:** `brief`, `script`, `scene_plan`, `asset_manifest`, `edit_decisions`, `render_report`, `publish_log`
-- **Every tool inherits from `tools/base_tool.py`** (ToolContract)
 - **Checkpoint policy** lives in pipeline manifest (`human_approval_default` per stage) + `skills/meta/checkpoint-protocol.md`
-- **Reviewer** is a meta skill (`skills/meta/reviewer.md`), advisory, max 2 rounds
 - **Cost tracker** (`tools/cost_tracker.py`) manages budget: estimate -> reserve -> reconcile
-- **Canonical artifacts** validated against JSON schemas in `schemas/artifacts/`
 
 ## Key Files
 
@@ -80,40 +64,4 @@ Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3. See `skills/INDE
 | `schemas/styles/playbook.schema.json` | Playbook schema v2 with design tokens (chart_palette, scale_system, weight_matrix, color_rules) |
 | `tests/qa/` | Quality validation test scripts for tool-by-tool output inspection |
 
-## Available Pipelines
-
-| Pipeline | Manifest | Type |
-|----------|----------|------|
-| `talking-head` | `pipeline_defs/talking-head.yaml` | Footage-based |
-| `animated-explainer` | `pipeline_defs/animated-explainer.yaml` | AI-generated |
-| `screen-demo` | `pipeline_defs/screen-demo.yaml` | Screen-recording |
-| `clip-factory` | `pipeline_defs/clip-factory.yaml` | Short-form batch extraction |
-| `podcast-repurpose` | `pipeline_defs/podcast-repurpose.yaml` | Podcast repurposing |
-| `cinematic` | `pipeline_defs/cinematic.yaml` | Cinematic edit |
-| `animation` | `pipeline_defs/animation.yaml` | Animation-first |
-| `character-animation` | `pipeline_defs/character-animation.yaml` | Local rigged character animation |
-| `hybrid` | `pipeline_defs/hybrid.yaml` | Source-plus-support hybrid |
-| `avatar-spokesperson` | `pipeline_defs/avatar-spokesperson.yaml` | Avatar presenter |
-| `localization-dub` | `pipeline_defs/localization-dub.yaml` | Localization and dubbing |
-| `framework-smoke` | `pipeline_defs/framework-smoke.yaml` | Test harness |
-
-## When Building New Pipelines
-
-1. Create a YAML manifest in `pipeline_defs/` (validated by `pipeline_manifest.schema.json`)
-2. Create stage director skills in `skills/pipelines/<pipeline-name>/` (7 skills: idea through publish)
-3. Reference meta skills (reviewer, checkpoint-protocol) in the manifest
-4. Add compatible playbooks to the manifest
-5. Add contract tests in `tests/contracts/`
-
-## When Building New Tools
-
-1. Inherit from `tools/base_tool.py` `BaseTool`
-2. Put the tool in the correct capability package (`tools/audio/`, `tools/video/`, `tools/enhancement/`, `tools/analysis/`, `tools/graphics/`, `tools/avatar/`, `tools/subtitle/`)
-3. Prefer the selector-plus-provider pattern:
-   - one capability router tool for agent convenience
-   - one concrete tool per real provider/runtime path
-4. Set all contract fields (name, version, tier, capability, provider, supports, fallback_tools, agent_skills, etc.)
-5. Implement `execute()` returning a `ToolResult`
-6. Let discovery happen through `tools/tool_registry.py`; do not depend on ad hoc imports
-7. Add a JSON schema in `schemas/tools/` if the tool has complex I/O
-8. Add tests only after the runtime path is correct
+Available pipelines: `pipeline_defs/` (one manifest per pipeline); `AGENT_GUIDE.md` → "Available Pipelines" has best-for and stability.
