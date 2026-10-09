@@ -604,7 +604,7 @@ OpenMontage 兼容所有能够读取文件并执行 Python 的 AI 编程助手�
 | **Codex** | `CODEX.md` |
 | **Windsurf** | `.windsurfrules` |
 
-所有平台的指令文件都指向共享的 `AGENT_GUIDE.md`（操作指南和智能体契约），该文件再链接到 `PROJECT_CONTEXT.md`（架构参考）与 `CODING_STANDARDS.md`（代码规范）。
+所有平台的指令文件都指向共享的 `AGENT_GUIDE.md`（操作指南和智能体契约），该文件再链接到 `PROJECT_CONTEXT.md`（架构参考）、`CODING_STANDARDS.md`（代码规范）以及 `docs/agent/` 中的分支参考文档。
 
 > **即将推出：** 借助 **Ollama** 和 **LM Studio** 提供本地 LLM 支持 — 无需任何云端大模型即可运行整个生产流水线。
 

@@ -109,7 +109,7 @@ Record:
 
 This directly affects what you can promise in the production plan. **Do not propose a concept that requires tools you don't have.**
 
-**Setup offers:** If critical tools are UNAVAILABLE but fixable with a simple configuration, read each tool's `install_instructions` from the registry and offer the user setup help before designing around the limitation. See AGENT_GUIDE.md "Provider Menu" protocol for the approach. Group related tools that share the same env var dependency.
+**Setup offers:** If critical tools are UNAVAILABLE but fixable with a simple configuration, read each tool's `install_instructions` from the registry and offer the user setup help before designing around the limitation. See docs/agent/preflight.md "Provider Menu" protocol for the approach. Group related tools that share the same env var dependency.
 
 ### Step 2c: Mood Board (Before Concepts)
 

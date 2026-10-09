@@ -317,7 +317,7 @@ class ToolRegistry:
         """Compact, human-ready rollup of provider_menu() for onboarding/preflight.
 
         Returns a dict shaped for the "N of M configured" capability menu the
-        agent is supposed to present to the user per AGENT_GUIDE.md → "Provider
+        agent is supposed to present to the user per docs/agent/preflight.md → "Provider
         Menu (Mandatory at Preflight)". Collapses the firehose of
         support_envelope() into something the agent can paraphrase in plain
         language in a few lines.
@@ -348,7 +348,7 @@ class ToolRegistry:
 
         Agents should use this as the source for the preflight capability
         menu rather than rendering `support_envelope()` or `provider_menu()`
-        raw. See AGENT_GUIDE.md > "Provider Menu (Mandatory at Preflight)".
+        raw. See docs/agent/preflight.md > "Provider Menu (Mandatory at Preflight)".
         """
         self.ensure_discovered()
         menu = self.provider_menu()

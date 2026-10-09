@@ -158,7 +158,7 @@
         "composition_mode": {
           "type": "string",
           "enum": ["templated", "atelier"],
-          "description": "Locked at proposal — HOW the composition is built (orthogonal to render_runtime). templated=assemble stock cut.type scenes (Explainer/CinematicRenderer); atelier=hand-author a project-local composition from scratch with no creative-component reuse. Default atelier for hero work. See AGENT_GUIDE.md → 'Composition Authoring Mode' and skills/meta/bespoke-composition.md. The decision MUST be logged in decision_log with category='composition_mode' and BOTH options presented."
+          "description": "Locked at proposal — HOW the composition is built (orthogonal to render_runtime). templated=assemble stock cut.type scenes (Explainer/CinematicRenderer); atelier=hand-author a project-local composition from scratch with no creative-component reuse. Default atelier for hero work. See docs/agent/composition.md → 'Composition Authoring Mode' and skills/meta/bespoke-composition.md. The decision MUST be logged in decision_log with category='composition_mode' and BOTH options presented."
         },
         "art_direction": {
           "type": "string",

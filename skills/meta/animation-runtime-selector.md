@@ -12,7 +12,7 @@ Read this before authoring any animated component or composition, and whenever y
 > scratch). Default to atelier for hero work and follow `skills/meta/bespoke-composition.md`.
 > The routing below applies within either mode — but in atelier mode the stock scene-types and
 > registry blocks are off-limits; you write your own. "Does a stock cut-type fit?" is **not** a
-> valid shortcut for a hero piece. See `AGENT_GUIDE.md` → "Composition Authoring Mode".
+> valid shortcut for a hero piece. See `docs/agent/composition.md` → "Composition Authoring Mode".
 
 ## When to use this skill
 

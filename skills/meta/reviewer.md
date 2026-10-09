@@ -319,11 +319,11 @@ Run at **compose** and **publish** stages. Ensures the agent reviewed the actual
 
 ## Composition Authoring Mode Review
 
-The templated→atelier inversion (`AGENT_GUIDE.md` → "Composition Authoring Mode" + `skills/meta/bespoke-composition.md`) is governance, not a suggestion. The reviewer is the enforcement point: without these checks, the next agent quietly defaults back to the stock cut-schema and every video starts looking the same again.
+The templated→atelier inversion (`docs/agent/composition.md` → "Composition Authoring Mode" + `skills/meta/bespoke-composition.md`) is governance, not a suggestion. The reviewer is the enforcement point: without these checks, the next agent quietly defaults back to the stock cut-schema and every video starts looking the same again.
 
 ### At proposal stage:
 1. `decision_log` must contain a `composition_mode` decision with `options_considered: ["templated","atelier"]` and a `selected` value with a real reason tied to the brief.
-   - Missing `composition_mode` decision entirely: **CRITICAL** — "Proposal missing composition_mode choice. Atelier vs templated is a mandatory presented decision (see AGENT_GUIDE.md → Composition Authoring Mode)."
+   - Missing `composition_mode` decision entirely: **CRITICAL** — "Proposal missing composition_mode choice. Atelier vs templated is a mandatory presented decision (see docs/agent/composition.md → Composition Authoring Mode)."
    - Decision logged with only one option considered: **CRITICAL** — "composition_mode decision logged without presenting both templated and atelier alternatives."
 2. For **hero work** (brief tagged marketing / launch / brand piece / explainer-with-quality-bar / any single-deliverable where quality is the point) where `selected == "templated"`: **CRITICAL** — "Hero brief locked composition_mode='templated'. Default is atelier per doctrine; templated requires an explicit reason in `decision_log.<entry>.reason` (e.g. localization variant, batch, time-boxed draft)." Only suppress if the reason field names a sanctioned exception.
 3. If `composition_mode == "atelier"` and `proposal_packet` lacks an `art_direction` declaration (palette, type, motion, signature device): **CRITICAL** — "Atelier proposal missing art-direction commitment. Per `skills/meta/bespoke-composition.md` step 1, art direction must be written down *before* authoring scenes."

@@ -131,7 +131,7 @@ Before designing concepts, scan what's available and present it honestly. **Do N
 ```python
 from tools.tool_registry import registry
 registry.discover()
-summary = registry.provider_menu_summary()  # see AGENT_GUIDE.md > Mandatory Preflight
+summary = registry.provider_menu_summary()  # see docs/agent/preflight.md > Mandatory Preflight
 ```
 
 Then render the scan from `summary`, grouping by capability. Example shape you should **generate from the registry**, not copy:
@@ -215,7 +215,7 @@ Note: This approach is not yet proven in the OpenMontage pipeline.
 **Rules for this section — same as Step 3a:**
 - Every provider name, env var, and cost comes from `provider_menu_summary()` or a tool's live `install_instructions` / `estimate_cost`.
 - The `{placeholder}` tokens above are for the agent to fill from the registry, not paste literally.
-- If you find yourself typing a specific API-key env-var name or a per-unit dollar cost into this section, stop. Those drift between releases; hardcoding them in a director skill is a governance regression (see AGENT_GUIDE.md on hardcoded provider names). Pull the same data from the registry instead.
+- If you find yourself typing a specific API-key env-var name or a per-unit dollar cost into this section, stop. Those drift between releases; hardcoding them in a director skill is a governance regression (see docs/agent/preflight.md → Provider Menu rules). Pull the same data from the registry instead.
 
 #### Step 3c: Mode Selection Rules
 

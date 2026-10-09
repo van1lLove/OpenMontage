@@ -226,7 +226,7 @@ Floor requirements (all must hold for `runtime_available: true`):
 `bun` is NOT required — HyperFrames is consumable via `npx hyperframes` (published npm package name is `hyperframes`; the monorepo-internal `@hyperframes/cli` name is NOT on the public npm registry and returns 404).
 
 When `runtime_available: false`, preflight must surface the reason and the
-install instructions. Per `AGENT_GUIDE.md` Setup Offer Protocol, group the
+install instructions. Per `docs/agent/preflight.md` → Setup Offer Protocol, group the
 fix by effort:
 
 - Missing Node 22 → 5-minute install, explain what it unlocks

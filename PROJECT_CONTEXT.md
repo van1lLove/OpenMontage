@@ -14,7 +14,7 @@ Agent reads pipeline manifest (YAML) → reads stage director skill (MD)
 
 ## Source of Truth
 
-- **Agent guide & contract:** `AGENT_GUIDE.md` (pipeline selection, stage agents, protocols, available pipelines)
+- **Agent guide & contract:** `AGENT_GUIDE.md` (request routing, hard rules, stage agents, protocols, available pipelines); branch reference in `docs/agent/`
 - **Code conventions:** `CODING_STANDARDS.md`
 - **Skill index:** `skills/INDEX.md`
 - **Tool registry:** `tools/tool_registry.py`
@@ -27,7 +27,7 @@ Agent reads pipeline manifest (YAML) → reads stage director skill (MD)
 
 ## Knowledge Architecture (3 Layers)
 
-See `AGENT_GUIDE.md` → "Layer Map". Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3; `skills/INDEX.md` has the full mapping.
+See `docs/agent/layers-and-styles.md` → "Layer Map". Each tool's `agent_skills[]` field bridges Layer 1 → Layer 3; `skills/INDEX.md` has the full mapping.
 
 ## Key Patterns
 

@@ -273,5 +273,5 @@ any of them. That is the whole point. Study only the *process* (decisions, order
 verification).
 
 See also: `skills/meta/animation-runtime-selector.md` (runtime + library routing),
-`AGENT_GUIDE.md` → "Composition Authoring Mode", `/hyperframes` (the HF router and
+`docs/agent/composition.md` → "Composition Authoring Mode", `/hyperframes` (the HF router and
 capability map).
